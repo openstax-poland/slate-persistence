@@ -6,11 +6,15 @@
   "types": "dist/index.d.ts",
   "repository": "https://github.com/openstax-poland/slate-persistence",
   "license": "MIT",
+  "files": [
+    "dist"
+  ],
   "dependencies": {
     "rollup": "^2.3.3",
     "rollup-plugin-typescript2": "^0.27.0",
     "typescript": "^3.8.3"
-  },"devDependencies": {
+  },
+  "devDependencies": {
     "slate": "^0.57.1"
   },
   "peerDependencies": {
