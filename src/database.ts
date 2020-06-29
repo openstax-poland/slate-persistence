@@ -2,10 +2,10 @@
 // Licensed under the MIT license. See LICENSE file in the project root for
 // full license text.
 
-import { Editor, Operation, Node, createEditor } from 'slate'
+import { createEditor, Editor, Node, Operation } from 'slate'
 
 import { Change, Content, State, upgradeDatabase } from './schema'
-import { Export, exportDatabase, promisify, importDatabase, iterate } from './util'
+import { Export, exportDatabase, importDatabase, iterate, promisify } from './util'
 
 export { State }
 
@@ -17,7 +17,7 @@ let DATABASE: PersistDB | null = null
 /** Management of and access to the persistence database */
 export class PersistDB {
     /** Open the database */
-    static async open(): Promise<PersistDB> {
+    public static async open(): Promise<PersistDB> {
         if (DATABASE !== null) return DATABASE
 
         const req = window.indexedDB.open(DB_NAME, DB_VERSION)
@@ -36,8 +36,8 @@ export class PersistDB {
      * This is a convenience wrapper around {@link #open}
      * and {@link #openDocument}.
      */
-    static load(id: string): Promise<DocumentDB> {
-        return PersistDB.open().then(db => db.openDocument(id))
+    public static async load(id: string): Promise<DocumentDB> {
+        return PersistDB.open().then(async db => db.openDocument(id))
     }
 
     private readonly database: IDBDatabase
@@ -53,12 +53,12 @@ export class PersistDB {
      * {@link #import}. It contains only plain JS values and can safely be
      * converted to/from JSON.
      */
-    public export(): Promise<Export> {
+    public async export(): Promise<Export> {
         return exportDatabase(this.database)
     }
 
     /** Import data into a database */
-    public import(data: Export): Promise<void> {
+    public async import(data: Export): Promise<void> {
         return importDatabase(this.database, data)
     }
 
@@ -113,8 +113,8 @@ export class PersistDB {
      * This has the same effect as calling {@link DocumentDB#discard} on
      * a loaded document.
      */
-    async discard(id: string): Promise<void> {
-        new DocumentDB(this.database, id).discard()
+    public async discard(id: string): Promise<void> {
+        return new DocumentDB(this.database, id).discard()
     }
 }
 
@@ -129,7 +129,7 @@ export class DocumentDB {
     public version: string | null
 
     /** @internal */
-    constructor(db: IDBDatabase, id: string) {
+    public constructor(db: IDBDatabase, id: string) {
         this.database = db
         this.id = id
         this.dirty = false
@@ -192,7 +192,7 @@ export class DocumentDB {
         const editor = createEditor()
         editor.children = value.content
 
-        let result: Node[]
+        let result!: Node[]
 
         Editor.withoutNormalizing(editor, () => {
             for (const op of ops) {
@@ -202,11 +202,11 @@ export class DocumentDB {
             result = editor.children
         })
 
-        return result!
+        return result
     }
 
     /** Discard any saved changes to a document */
-    async discard(): Promise<void> {
+    public async discard(): Promise<void> {
         const tx = this.database.transaction(
             ['states', 'changes', 'contents'], 'readwrite')
         const states = tx.objectStore('states')

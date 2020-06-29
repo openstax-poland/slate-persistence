@@ -7,7 +7,10 @@ import { Editor, Operation } from 'slate'
 import { DocumentDB } from './database'
 import { PersistingEditor } from './persisting-editor'
 
-export default function withPersistence<T extends Editor>(db: DocumentDB, editor: T): T & PersistingEditor {
+export default function withPersistence<T extends Editor>(
+    db: DocumentDB,
+    editor: T,
+): T & PersistingEditor {
     const e = editor as T & PersistingEditor
     const { apply } = e
 
@@ -15,7 +18,7 @@ export default function withPersistence<T extends Editor>(db: DocumentDB, editor
 
     e.apply = (op: Operation) => {
         if (!IGNORED_OPERATIONS.includes(op.type)) {
-            e.documentDB.mark(op)
+            void e.documentDB.mark(op)
         }
 
         apply(op)
@@ -25,7 +28,7 @@ export default function withPersistence<T extends Editor>(db: DocumentDB, editor
         e.children = await e.documentDB.restore()
 
         if ('history' in e) {
-            (e as any).history = { undos: [], redos: [] }
+            (e as Record<string, unknown>).history = { undos: [], redos: [] }
         }
     }
 

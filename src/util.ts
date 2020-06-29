@@ -3,7 +3,7 @@
 // full license text.
 
 /** Convert an IndexedDB request into a promise */
-export function promisify<T>(req: IDBRequest<T>): Promise<T> {
+export async function promisify<T>(req: IDBRequest<T>): Promise<T> {
     return new Promise((resolve, reject) => {
         req.onerror = () => reject(req.error)
         req.onsuccess = () => resolve(req.result)
@@ -16,18 +16,18 @@ export type IterateCallback<T> = (
     reject: <T extends Error> (err: T) => void,
 ) => void
 
-export function iterate<T>(
+export async function iterate<T>(
     store: IDBObjectStore | IDBIndex,
     f: IterateCallback<T>,
 ): Promise<void>
 
-export function iterate<T>(
+export async function iterate<T>(
     store: IDBObjectStore | IDBIndex,
     query: IDBValidKey | IDBKeyRange | null,
     f: IterateCallback<T>,
 ): Promise<void>
 
-export function iterate<T>(
+export async function iterate<T>(
     store: IDBObjectStore | IDBIndex,
     query: IDBValidKey | IDBKeyRange | null,
     direction: IDBCursorDirection,
@@ -43,9 +43,9 @@ export function iterate<T>(
  * (there are no more items remaining in the cursor), or rejected on a database
  * error, or if closure throws.
  */
-export function iterate<T>(
+export async function iterate<T>(
     store: IDBObjectStore | IDBIndex,
-    ...args: any[]
+    ...args: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
 ): Promise<void> {
     const f: IterateCallback<T> = args.pop()
 
@@ -53,7 +53,7 @@ export function iterate<T>(
         const req = store.openCursor(...args)
         req.onerror = err => reject(err)
         req.onsuccess = event => {
-            const cursor = (event.target! as IDBRequest).result
+            const cursor = (event.target as IDBRequest).result
             if (cursor) {
                 try {
                     f(cursor, cursor.value, reject)
@@ -69,9 +69,9 @@ export function iterate<T>(
 
 export interface Export {
     database: {
-        name: string
-        version: number
-        objectStores: ObjectStoreMap
+        name: string,
+        version: number,
+        objectStores: ObjectStoreMap,
     }
     remove: RemoveMap
     insert: InsertMap
@@ -113,21 +113,21 @@ export type InsertMap = { [storeName: string]: unknown[] }
 export async function exportDatabase(db: IDBDatabase): Promise<Export> {
     // db.objectStoresNames has type DOMStringList, which contrary to TS's
     // typpings is allowed as an argument to IDBDatabase#transaction.
-    const tx = db.transaction(db.objectStoreNames as any, 'readonly')
+    const tx = db.transaction(db.objectStoreNames as unknown as string[], 'readonly')
     const insert: InsertMap = {}
     const objectStores: ObjectStoreMap = {}
 
     for (const name of db.objectStoreNames) {
         const store = tx.objectStore(name)
         const indexes = Object.fromEntries(Array.from(store.indexNames, name => {
-                const index = store.index(name)
-                return [name, {
-                    name: index.name,
-                    keyPath: index.keyPath,
-                    multiEntry: index.multiEntry,
-                    unique: index.unique,
-                }]
-            }))
+            const index = store.index(name)
+            return [name, {
+                name: index.name,
+                keyPath: index.keyPath,
+                multiEntry: index.multiEntry,
+                unique: index.unique,
+            }]
+        }))
 
         insert[name] = await promisify(store.getAll())
 
@@ -151,7 +151,7 @@ export async function exportDatabase(db: IDBDatabase): Promise<Export> {
 }
 
 /** Import data into a database */
-export async function importDatabase(db: IDBDatabase, data: Export) {
+export async function importDatabase(db: IDBDatabase, data: Export): Promise<void> {
     const { database: { name, version }, remove = {}, insert = {} } = data
 
     if (name !== db.name) {
@@ -165,7 +165,7 @@ export async function importDatabase(db: IDBDatabase, data: Export) {
             (this database uses ${db.version}`)
     }
 
-    const tx = db.transaction(db.objectStoreNames as any, 'readwrite')
+    const tx = db.transaction(db.objectStoreNames as unknown as string[], 'readwrite')
 
     for (const [name, { key, index }] of Object.entries(remove)) {
         const store = tx.objectStore(name)

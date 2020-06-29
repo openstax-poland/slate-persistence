@@ -17,7 +17,7 @@ export const PersistingEditor = {
      *
      * If this editor also uses `withHistory` the history will be cleared.
      */
-    restore(editor: PersistingEditor): Promise<void> {
+    async restore(editor: PersistingEditor): Promise<void> {
         return editor.restore()
     },
 }
