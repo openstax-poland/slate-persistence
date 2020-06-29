@@ -192,7 +192,7 @@ export class DocumentDB {
         const editor = createEditor()
         editor.children = value.content
 
-        let result
+        let result: Node[]
 
         Editor.withoutNormalizing(editor, () => {
             for (const op of ops) {
@@ -202,7 +202,7 @@ export class DocumentDB {
             result = editor.children
         })
 
-        return result
+        return result!
     }
 
     /** Discard any saved changes to a document */
