@@ -45,11 +45,12 @@ export type Content = {
     content: Node[],
 }
 
+/* eslint-disable func-names */
 const MIGRATIONS: ((db: IDBDatabase, tx: IDBTransaction) => void)[] = [
     // A dummy migration to fill index 0. It will never be executed, since
     // database versions start at 1 (0 is the “version” before first migration,
     // when database is created).
-    /* eslint-disable-next-line no-empty-function */
+    /* eslint-disable-next-line @typescript-eslint/no-empty-function */
     function() {},
     // 0 → 1
     function(db) {
@@ -66,10 +67,11 @@ const MIGRATIONS: ((db: IDBDatabase, tx: IDBTransaction) => void)[] = [
         })
     },
 ]
+/* eslint-enable func-names */
 
-export function upgradeDatabase(event: IDBVersionChangeEvent) {
+export function upgradeDatabase(event: IDBVersionChangeEvent): void {
     const { newVersion, oldVersion } = event
-    const { result: db, transaction: tx } = (event.target! as IDBOpenDBRequest)
+    const { result: db, transaction: tx } = event.target as IDBOpenDBRequest
 
     if (newVersion === null || tx === null) {
         // We're being deleted.
