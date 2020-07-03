@@ -15,10 +15,10 @@
     "typescript": "^3.8.3"
   },
   "devDependencies": {
-    "slate": "^0.57.1"
+    "slate": ">= 0.57.0, < 0.59.0"
   },
   "peerDependencies": {
-    "slate": "^0.57.1"
+    "slate": ">= 0.57.0, < 0.59.0"
   },
   "scripts": {
     "build": "rollup -c",
