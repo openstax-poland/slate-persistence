@@ -13,6 +13,23 @@ export interface PersistingEditor extends Editor {
 
 export const PersistingEditor = {
     /**
+     * Check if a value is a `PersistingEditor` object.
+     */
+    isPersistingEditor(value: unknown): value is PersistingEditor {
+        return Editor.isEditor(value)
+            && typeof value.restore === 'function'
+            && value.documentDB instanceof DocumentDB
+    },
+
+    /**
+     * Check if changes have been made to the editor since the last time it was
+     * saved.
+     */
+    hasChanges(editor: PersistingEditor): boolean {
+        return editor.documentDB.dirty
+    },
+
+    /**
      * Restore editor to last state saved in {@link DocumentDB}
      *
      * If this editor also uses `withHistory` the history will be cleared.

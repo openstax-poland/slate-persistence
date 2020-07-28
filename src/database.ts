@@ -161,6 +161,7 @@ export class DocumentDB {
         ].map(promisify))
 
         this.version = version
+        this.dirty = false
     }
 
     /** Mark a change to the document */
@@ -172,6 +173,8 @@ export class DocumentDB {
             document: this.id,
             change: op,
         }))
+
+        this.dirty = true
     }
 
     /**
