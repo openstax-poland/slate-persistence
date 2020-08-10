@@ -8,6 +8,16 @@ import { DocumentDB } from './database'
 
 export interface PersistingEditor extends Editor {
     documentDB: DocumentDB
+
+    /**
+     * Function called when all changes have been persisted to IndexedDB
+     *
+     * This function will be called once for each call to
+     * {@link Editor#onChange}. There may be a delay between a call to
+     * {@link Editor#onChange} and a corresponding call to this function, and
+     * that delay may be long enough for another change to occur.
+     */
+    onChangesPersisted: () => void
     restore: () => Promise<void>
 }
 
