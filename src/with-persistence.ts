@@ -26,7 +26,7 @@ export default function withPersistence<T extends Editor>(
     editor: T,
 ): T & PersistingEditor {
     const e = editor as T & PersistingEditor
-    const { onChange } = e
+    const { apply, onChange } = e
 
     e.documentDB = db
     e.onChangesPersisted = () => {} // eslint-disable-line @typescript-eslint/no-empty-function
@@ -47,11 +47,21 @@ export default function withPersistence<T extends Editor>(
     }
 
     e.restore = synchronised(e, async () => {
-        e.children = await e.documentDB.restore()
+        const [state, ops] = await e.documentDB.restore()
+
+        Editor.withoutNormalizing(e, () => {
+            e.children = state
+
+            for (const op of ops) {
+                apply(op)
+            }
+        })
 
         if ('history' in e) {
             (e as Record<string, unknown>).history = { undos: [], redos: [] }
         }
+
+        e.operations = []
 
         e.onChange()
         e.onChangesPersisted()

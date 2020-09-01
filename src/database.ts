@@ -179,10 +179,8 @@ export class DocumentDB {
 
     /**
      * Restore document from its saved state
-     *
-     * The returned value will not be normalized.
      */
-    public async restore(): Promise<Node[]> {
+    public async restore(): Promise<[Node[], Operation[]]> {
         const tx = this.database.transaction(['contents', 'changes'])
         const contents = tx.objectStore('contents')
         const changes = tx.objectStore('changes').index('document')
@@ -192,20 +190,7 @@ export class DocumentDB {
             promisify<Change[]>(changes.getAll(this.id)),
         ])
 
-        const editor = createEditor()
-        editor.children = value.content
-
-        let result!: Node[]
-
-        Editor.withoutNormalizing(editor, () => {
-            for (const op of ops) {
-                editor.apply(op.change)
-            }
-
-            result = editor.children
-        })
-
-        return result
+        return [value.content, ops.map(o => o.change)]
     }
 
     /** Discard any saved changes to a document */
