@@ -21,7 +21,8 @@
     "eslint-config-openstax-poland": "https://github.com/openstax-poland/eslint-config-openstax-poland.git",
     "eslint-import-resolver-node": "^0.3.4",
     "eslint-plugin-import": "^2.22.0",
-    "slate": "0.57.0 - 0.59.x"
+    "slate": "0.57.0 - 0.59.x",
+    "tslib": "^2.2.0"
   },
   "peerDependencies": {
     "slate": "0.57.0 - 0.59.x"
