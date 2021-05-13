@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for
 // full license text.
 
-import { createEditor, Editor, Node, Operation } from 'slate'
+import { Node, Operation } from 'slate'
 
 import { Change, Content, State, upgradeDatabase } from './schema'
 import { Export, exportDatabase, importDatabase, iterate, promisify } from './util'
