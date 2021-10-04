@@ -1,6 +1,6 @@
 {
   "name": "slate-persistence",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "dist/index.cjs.js",
   "module": "dist/index.es.js",
   "types": "dist/index.d.ts",
@@ -21,11 +21,11 @@
     "eslint-config-openstax-poland": "openstax-poland/eslint-config-openstax-poland#gitpub/eslint-config-openstax-poland@0.1.0",
     "eslint-import-resolver-node": "^0.3.6",
     "eslint-plugin-import": "=2.22.1",
-    "slate": "0.57.0 - 0.59.x",
+    "slate": "0.57.0 - 0.66.x",
     "tslib": "^2.3.1"
   },
   "peerDependencies": {
-    "slate": "0.57.0 - 0.59.x"
+    "slate": "0.57.0 - 0.66.x"
   },
   "scripts": {
     "build": "rollup -c",

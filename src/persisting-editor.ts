@@ -27,8 +27,8 @@ export const PersistingEditor = {
      */
     isPersistingEditor(value: unknown): value is PersistingEditor {
         return Editor.isEditor(value)
-            && typeof value.restore === 'function'
-            && value.documentDB instanceof DocumentDB
+            && typeof (value as PersistingEditor).restore === 'function'
+            && (value as PersistingEditor).documentDB instanceof DocumentDB
     },
 
     /**
