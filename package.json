@@ -10,19 +10,19 @@
     "dist"
   ],
   "dependencies": {
-    "rollup": "^2.3.3",
-    "rollup-plugin-typescript2": "^0.27.0",
-    "typescript": "^4.1.4"
+    "rollup": "^2.58.0",
+    "rollup-plugin-typescript2": "^0.30.0",
+    "typescript": "^4.4.3"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^4.15.0",
-    "@typescript-eslint/parser": "^4.15.0",
-    "eslint": "^7.3.1",
+    "@typescript-eslint/eslint-plugin": "^4.32.0",
+    "@typescript-eslint/parser": "^4.32.0",
+    "eslint": "^7.32.0",
     "eslint-config-openstax-poland": "openstax-poland/eslint-config-openstax-poland#gitpub/eslint-config-openstax-poland@0.1.0",
-    "eslint-import-resolver-node": "^0.3.4",
+    "eslint-import-resolver-node": "^0.3.6",
     "eslint-plugin-import": "=2.22.1",
     "slate": "0.57.0 - 0.59.x",
-    "tslib": "^2.2.0"
+    "tslib": "^2.3.1"
   },
   "peerDependencies": {
     "slate": "0.57.0 - 0.59.x"
