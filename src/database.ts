@@ -67,7 +67,8 @@ export class PersistDB {
         const tx = this.database.transaction(['states', 'changes'])
         const store = tx.objectStore('states')
         const document = new DocumentDB(this.database, id)
-        const data = await promisify(store.get(id))
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        const data = await promisify<State>(store.get(id))
 
         if (!data) {
             return document
@@ -185,10 +186,12 @@ export class DocumentDB {
         const contents = tx.objectStore('contents')
         const changes = tx.objectStore('changes').index('document')
 
+        /* eslint-disable @typescript-eslint/no-unsafe-argument */
         const [value, ops] = await Promise.all([
             promisify<Content>(contents.get(this.id)),
             promisify<Change[]>(changes.getAll(this.id)),
         ])
+        /* eslint-enable @typescript-eslint/no-unsafe-argument */
 
         return [value.content, ops.map(o => o.change)]
     }

@@ -6,6 +6,10 @@ parserOptions:
 
 extends: openstax-poland/typescript/style
 
+settings:
+  # Consider PnP-installed modules as external
+  import/external-module-folders: ["node_modules", ".yarn"]
+
 rules:
   # Same as default configuration but PascalCase is allowed for variable names.
   # This is because we follow Slate's convention of defining functions connected

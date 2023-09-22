@@ -47,16 +47,18 @@ export async function iterate<T>(
     store: IDBObjectStore | IDBIndex,
     ...args: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
 ): Promise<void> {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const f: IterateCallback<T> = args.pop()
 
     return new Promise((resolve, reject) => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         const req = store.openCursor(...args)
         req.onerror = err => reject(err)
         req.onsuccess = event => {
-            const cursor = (event.target as IDBRequest).result
+            const cursor = (event.target as IDBRequest).result as IDBCursorWithValue
             if (cursor) {
                 try {
-                    f(cursor, cursor.value, reject)
+                    f(cursor, cursor.value as T, reject)
                 } catch (ex) {
                     reject(ex)
                 }
@@ -182,10 +184,10 @@ export async function importDatabase(db: IDBDatabase, data: Export): Promise<voi
             }
         } else if (keys) {
             for (const key of keys) {
-                await store.delete(key)
+                await promisify(store.delete(key))
             }
         } else {
-            await store.clear()
+            await promisify(store.clear())
         }
     }
 
