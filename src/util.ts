@@ -5,6 +5,8 @@
 /** Convert an IndexedDB request into a promise */
 export async function promisify<T>(req: IDBRequest<T>): Promise<T> {
     return new Promise((resolve, reject) => {
+        /* eslint-disable-next-line
+            @typescript-eslint/prefer-promise-reject-errors */
         req.onerror = () => reject(req.error)
         req.onsuccess = () => resolve(req.result)
     })
@@ -53,6 +55,8 @@ export async function iterate<T>(
     return new Promise((resolve, reject) => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         const req = store.openCursor(...args)
+        /* eslint-disable-next-line
+            @typescript-eslint/prefer-promise-reject-errors */
         req.onerror = err => reject(err)
         req.onsuccess = event => {
             const cursor = (event.target as IDBRequest).result as IDBCursorWithValue
@@ -60,6 +64,8 @@ export async function iterate<T>(
                 try {
                     f(cursor, cursor.value as T, reject)
                 } catch (ex) {
+                    /* eslint-disable-next-line
+                        @typescript-eslint/prefer-promise-reject-errors */
                     reject(ex)
                 }
             } else {
@@ -135,7 +141,7 @@ export async function exportDatabase(db: IDBDatabase): Promise<Export> {
 
         objectStores[name] = {
             indexes,
-            keyPath: store.keyPath,
+            keyPath: store.keyPath!,
             autoIncrement: store.autoIncrement,
         }
     }

@@ -78,7 +78,7 @@ export function upgradeDatabase(event: IDBVersionChangeEvent): void {
         return
     }
 
-    for (let ver=oldVersion+1 ; ver<=newVersion ; ++ver) {
+    for (let ver = oldVersion + 1; ver <= newVersion; ++ver) {
         MIGRATIONS[ver](db, tx)
     }
 }
