@@ -2,11 +2,11 @@
 // Licensed under the MIT license. See LICENSE file in the project root for
 // full license text.
 
-import { Editor } from 'slate'
+import { BaseEditor, Editor } from 'slate'
 
 import { DocumentDB } from './database'
 
-export interface PersistingEditor extends Editor {
+export interface PersistingEditor extends BaseEditor {
     documentDB: DocumentDB
 
     /**

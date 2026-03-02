@@ -2,14 +2,14 @@
 // Licensed under the MIT license. See LICENSE file in the project root for
 // full license text.
 
-import { Editor, Operation } from 'slate'
+import { BaseEditor, Editor, Operation } from 'slate'
 
 import { DocumentDB } from './database'
 import { PersistingEditor } from './persisting-editor'
 
-const SYNC = new WeakMap<Editor, Promise<void>>()
+const SYNC = new WeakMap<BaseEditor, Promise<void>>()
 
-function synchronised<T extends unknown[]>(key: Editor, f: (...args: T) => Promise<void>) {
+function synchronised<T extends unknown[]>(key: BaseEditor, f: (...args: T) => Promise<void>) {
     return async (...args: T) => {
         const sync = SYNC.get(key) ?? Promise.resolve()
         const r = (async () => {
@@ -21,7 +21,7 @@ function synchronised<T extends unknown[]>(key: Editor, f: (...args: T) => Promi
     }
 }
 
-export default function withPersistence<T extends Editor>(
+export default function withPersistence<T extends BaseEditor>(
     db: DocumentDB,
     editor: T,
 ): T & PersistingEditor {
